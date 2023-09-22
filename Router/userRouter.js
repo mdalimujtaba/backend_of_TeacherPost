@@ -6,7 +6,7 @@ const userRoute = express.Router()
 
 
 userRoute.post('/register', async (req, res) => {
-    const { firstname, lastname, email, password, cpassword, mobile, pincode } = req.body
+    const { firstname, lastname, email, password, confirm_password, mobile, pincode } = req.body
     try {
         bcrypt.hash(password, 5, async (err, safe) => {
             if (err) {
