@@ -11,7 +11,7 @@ const userSchema=mongoose.Schema({
     versionKey:false
 })
 
-const UserModel=mongoose.model("userSignup",userSchema)
+const UserModel=mongoose.model("student",userSchema)
 module.exports={
     UserModel
 }
