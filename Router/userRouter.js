@@ -7,21 +7,27 @@ const userRoute = express.Router()
 
 userRoute.post('/register', async (req, res) => {
     const { firstname, lastname, email, password, confirm_password, mobile, pincode } = req.body
-    try {
-        bcrypt.hash(password, 5, async (err, safe) => {
-            if (err) {
-                res.send({ 'msg': 'Something went wrong' })
-            }
-            else {
-                let signup = new UserModel({ firstname, lastname, email, password: safe, mobile, pincode })
-                await signup.save()
-                console.log(signup)
-                res.send({ 'msg': 'Signup Successfull' })
-            }
-        })
-    } catch (error) {
-        console.log(error)
-        res.send({ 'msg': 'Something went wrong' })
+    const data=await UserModel.find({email})
+    
+    if(data.length>0 && data[0].email===email){
+        res.send({ 'msg': 'Email exist! Please Login!' })
+    }else{
+        try {
+            bcrypt.hash(password, 5, async (err, safe) => {
+                if (err) {
+                    res.send({ 'msg': 'Something went wrong' })
+                }
+                else {
+                    let signup = new UserModel({ firstname, lastname, email, password: safe, mobile, pincode })
+                    await signup.save()
+                    console.log(signup)
+                    res.send({ 'msg': 'Signup Successfull' })
+                }
+            })
+        } catch (error) {
+            console.log(error)
+            res.send({ 'msg': 'Something went wrong' })
+        }
     }
 })
 
