@@ -1,19 +1,22 @@
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
+const cookie=require('cookie-parser')
 const port = process.env.PORT
 const { connected } = require('./configs/db')
 const { userRoute } = require('./Router/userRouter')
 const { productRoute } = require('./Router/productRouter')
+const cookieParser = require('cookie-parser')
 
 const app = express()
 
 app.use(cors({ origin: '*' }))
-
+app.use(cookieParser())
 app.use(express.json())
 
-app.use('/user', userRoute)
 app.use('/teachers',productRoute)
+
+app.use('/user', userRoute)
 
 
 app.listen(port, async () => {
