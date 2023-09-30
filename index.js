@@ -7,6 +7,7 @@ const { connected } = require('./configs/db')
 const { userRoute } = require('./Router/userRouter')
 const { productRoute } = require('./Router/productRouter')
 const cookieParser = require('cookie-parser')
+const { teacherRoute } = require('./Router/teacherRouter')
 
 const app = express()
 
@@ -14,9 +15,9 @@ app.use(cors({ origin: '*' }))
 app.use(cookieParser())
 app.use(express.json())
 
-app.use('/teachers',productRoute)
-
+app.use('/all_teacher',productRoute)
 app.use('/user', userRoute)
+app.use('/teacher',teacherRoute)
 
 
 app.listen(port, async () => {

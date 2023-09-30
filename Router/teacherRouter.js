@@ -2,11 +2,12 @@ const express = require("express")
 require('dotenv').config()
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const { UserModel } = require("../Models/userModels")
-const userRoute = express.Router()
+const teacherRoute = express.Router()
 const nodemailer=require('nodemailer')
-const { UserOTPVerificationModel } = require("../Models/UserOTPVerification")
+// const { UserOTPVerificationModel } = require("../Models/UserOTPVerification")
 const {authentication}=require('../Authentications/Authentication')
+const { TeacherModel } = require("../Models/teacherModels")
+const { TeacherOTPVerificationModel } = require("../Models/TeacherOTPVerification")
 
 
 // const transporter = nodemailer.createTransport({
@@ -17,9 +18,9 @@ const {authentication}=require('../Authentications/Authentication')
 //     },
 //   });
 
-userRoute.post('/register', async (req, res) => {
+teacherRoute.post('/register', async (req, res) => {
     const { firstname, lastname, email, password, confirm_password, mobile, pincode,verified } = req.body
-    const data=await UserModel.find({email})
+    const data=await TeacherModel.find({email})
     
     if(data.length>0 && data[0].email===email){
         res.send({ 'msg': 'Email exist! Please Login!' })
@@ -30,7 +31,7 @@ userRoute.post('/register', async (req, res) => {
                     res.send({ 'msg': 'Something went wrong' })
                 }
                 else {
-                    let signup = new UserModel({ firstname, lastname, email, password: safe, mobile, pincode,verified:false })
+                    let signup = new TeacherModel({ firstname, lastname, email, password: safe, mobile, pincode,verified:false })
                     await signup.save()
                     // .then((result)=>{
                     //     sendOTPVerificationEmail(result,res)
@@ -46,16 +47,16 @@ userRoute.post('/register', async (req, res) => {
     }
 })
 
-userRoute.post('/login', async (req, res) => {
+teacherRoute.post('/login', async (req, res) => {
     const { email, password } = req.body
     try {
-        const data = await UserModel.find({ email })
+        const data = await TeacherModel.find({ email })
         if (data.length > 0 && data[0].email === email) {
             bcrypt.compare(password, data[0].password, async (err, result) => {
                 if (result) {
                     const token = jwt.sign({ "userID": data[0]._id }, "teacher",{expiresIn:'30s'})
                     res.cookie(String(data[0]._id),token,{
-                        path:'/user',
+                        path:'/teacher',
                         expires:new Date(Date.now()+30000),
                         httpOnly:true,
                         sameSite:'lax'
@@ -88,7 +89,7 @@ userRoute.post('/login', async (req, res) => {
 //             html:`<p>Enter <b>${otp} to verify your email address and complete your registration.</b></p>
 //             <p>This code verify in 1 hour.</p>`
 //         }
-//         const otpVerification=new UserOTPVerificationModel({
+//         const otpVerification=new TeacherOTPVerificationModel({
 //             userID:_id,
 //             otp:otp,
 //             createdAt:Date.now(),
@@ -109,10 +110,10 @@ userRoute.post('/login', async (req, res) => {
 //         res.send({'msg':'error occurred'})
 //     }
 // }
-// userRoute.use(authentication)
-// userRoute.get('/userGet',async(req,res)=>{
+// teacherRoute.use(authentication)
+// teacherRoute.get('/userGet',async(req,res)=>{
 //     const {userID}=req.body
-//     let user=await UserModel.findById(userID)
+//     let user=await TeacherModel.findById(userID)
 //     try {
 //         if(!user){
 //             res.send({'message':'User not found'})
@@ -124,9 +125,9 @@ userRoute.post('/login', async (req, res) => {
 //         console.log(error)
 //     }
 // })
-// userRoute.post("/verifyOTP",async(req,res)=>{
+// teacherRoute.post("/verifyOTP",async(req,res)=>{
 //     const {userID,otp}=req.body
-//     let userOtpRecord=await UserOTPVerificationModel.find({userID}).populate(['userID'])
+//     let userOtpRecord=await TeacherOTPVerificationModel.find({userID}).populate(['userID'])
 //     const {expiredAt,_id}=userOtpRecord[0]
 //     console.log(otp,userOtpRecord[0].otp)
 //     try {
@@ -135,13 +136,13 @@ userRoute.post('/login', async (req, res) => {
 //         }
 //         else{
 //            if(expiredAt < Date.now()){
-//             await UserOTPVerificationModel.deleteMany(_id)
+//             await TeacherOTPVerificationModel.deleteMany(_id)
 //             res.send({'msg':'OTP expired'})
 //            }
 //            else{
 //             if(otp===userOtpRecord[0].otp){
-//                 await UserModel.updateOne({_id:userID},{verified:true})
-//                 await UserOTPVerificationModel.deleteMany(_id)
+//                 await TeacherModel.updateOne({_id:userID},{verified:true})
+//                 await TeacherOTPVerificationModel.deleteMany(_id)
 //                 res.send({
 //                     status:'verified',
 //                     message:"User email verified successfully"
@@ -161,11 +162,11 @@ userRoute.post('/login', async (req, res) => {
 
 // })
 
-// userRoute.post('/resentOtp',async(req,res)=>{
+// teacherRoute.post('/resentOtp',async(req,res)=>{
 // try {
 //     const {userID,email}=req.body
 //     console.log(userID,email)
-//     await UserOTPVerificationModel.deleteMany({userID})
+//     await TeacherOTPVerificationModel.deleteMany({userID})
 //     sendOTPVerificationEmail({_id:userID,email},res)
 
 // } catch (error) {
@@ -174,4 +175,4 @@ userRoute.post('/login', async (req, res) => {
 // }    
 
 // })
-module.exports = { userRoute }
+module.exports = { teacherRoute }
