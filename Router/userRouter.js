@@ -60,7 +60,8 @@ userRoute.post('/login', async (req, res) => {
                         httpOnly:true,
                         sameSite:'lax'
                     })
-                    res.send({ "msg": "Login Successfull", "token": token, "firstname": data[0].firstname ,"type": "student", "_id": data[0]._id})
+                    res.send({ "msg": "Login Successfull", "token": token, "firstname": data[0].firstname ,
+                    "type": "student", "_id": data[0]._id})
                 } else {
                     res.send({ 'msg': "Wrong Credential" })
                 }
