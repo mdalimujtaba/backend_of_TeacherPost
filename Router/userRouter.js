@@ -175,4 +175,20 @@ try {
 }    
 
 })
+userRoute.post('/logout',async(req,res)=>{
+    let {userID}=req.body
+    let cookie=req.headers.cookie
+    console.log(cookie)
+    let prevToken=cookie.split("=")[1]
+    if(!prevToken){
+        res.status(400).json({"message":"Could't found token"})
+    }
+    jwt.verify(prevToken, "teacher",(err,user)=>{ 
+      
+        res.clearCookie(`${userID}`)
+        req.cookies[`${userID}`]=""
+        console.log( req.cookies)
+        return res.status(200).json({"message":"Successfully logged out"})
+    });
+})
 module.exports = { userRoute }
