@@ -55,6 +55,9 @@ teacherRoute.post('/login', async (req, res) => {
             bcrypt.compare(password, data[0].password, async (err, result) => {
                 if (result) {
                     const token = jwt.sign({ "userID": data[0]._id }, "teacher",{expiresIn:'1h'})
+                    if(req.cookies[`${data[0]._id}`]){
+                        req.cookies[`${data[0]._id}`]
+                    }
                     res.cookie(String(data[0]._id),token,{
                         path:'/',
                         expires:new Date(Date.now()+3600000),
@@ -174,5 +177,21 @@ try {
     res.send({'msg':'Error in resending otp'})
 }    
 
+})
+teacherRoute.post('/logout',async(req,res)=>{
+    let {userID}=req.body
+    let cookie=req.headers.cookie
+    console.log(cookie)
+    let prevToken=cookie.split("=")[1]
+    if(!prevToken){
+        res.status(400).json({"message":"Could't found token"})
+    }
+    jwt.verify(prevToken, "teacher",(err,user)=>{ 
+      
+        res.clearCookie(`${userID}`)
+        req.cookies[`${userID}`]=""
+        console.log( req.cookies)
+        return res.status(200).json({"message":"Successfully logged out"})
+    });
 })
 module.exports = { teacherRoute }

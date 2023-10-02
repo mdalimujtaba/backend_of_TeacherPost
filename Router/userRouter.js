@@ -54,6 +54,9 @@ userRoute.post('/login', async (req, res) => {
             bcrypt.compare(password, data[0].password, async (err, result) => {
                 if (result) {
                     const token = jwt.sign({ "userID": data[0]._id }, "teacher",{expiresIn:'1h'})
+                    if(req.cookies[`${data[0]._id}`]){
+                        req.cookies[`${data[0]._id}`]
+                    }
                     res.cookie(String(data[0]._id),token,{
                         path:'/user',
                         expires:new Date(Date.now()+3600000),
