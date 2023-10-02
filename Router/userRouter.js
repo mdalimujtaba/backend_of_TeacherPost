@@ -6,7 +6,8 @@ const { UserModel } = require("../Models/userModels")
 const userRoute = express.Router()
 const nodemailer=require('nodemailer')
 const { UserOTPVerificationModel } = require("../Models/UserOTPVerification")
-const {authentication}=require('../Authentications/Authentication')
+// const {authentication}=require('../Authentications/Authentication')
+const { StudentAuthentication } = require("../Authentications/studentAuthentication")
 
 
 const transporter = nodemailer.createTransport({
@@ -50,10 +51,11 @@ userRoute.post('/login', async (req, res) => {
     const { email, password } = req.body
     try {
         const data = await UserModel.find({ email })
+        console.log(data)
         if (data.length > 0 && data[0].email === email) {
             bcrypt.compare(password, data[0].password, async (err, result) => {
                 if (result) {
-                    const token = jwt.sign({ "userID": data[0]._id }, "teacher",{expiresIn:'1h'})
+                    const token = jwt.sign({ "userID": data[0]._id }, "student",{expiresIn:'1h'})
                     if(req.cookies[`${data[0]._id}`]){
                         req.cookies[`${data[0]._id}`]
                     }
@@ -113,7 +115,8 @@ const sendOTPVerificationEmail=async({_id,email},res)=>{
         res.send({'msg':'error occurred'})
     }
 }
-userRoute.use(authentication)
+// userRoute.use(authentication)
+userRoute.use(StudentAuthentication)
 userRoute.get('/userGet',async(req,res)=>{
     const {userID}=req.body
     let user=await UserModel.findById(userID)
