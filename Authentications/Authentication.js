@@ -3,7 +3,7 @@ const authentication = (req, res, next) => {
   let cookies = req.headers.cookie;
   console.log(cookies)
   if (cookies == undefined) {
-    res.send({ message: "Please Login!" });
+    res.send({ message: "Respected Teachers! Please Login!" });
   } else {
     let token = cookies.split("=")[1];
     var decoded = jwt.verify(token, "teacher");
@@ -13,7 +13,7 @@ const authentication = (req, res, next) => {
       // console.log("userID", userID);
       next();
     } else {
-      res.send({ msg: "Please Login " });
+      res.send({ message: "Respected Teachers! Please Login!" });
     }
   }
 };

@@ -8,7 +8,7 @@ const { userRoute } = require('./Router/userRouter')
 const { productRoute } = require('./Router/productRouter')
 const cookieParser = require('cookie-parser')
 const { teacherRoute } = require('./Router/teacherRouter')
-const { student_detail_route } = require('./Router/studentDetailRouter')
+const { student_detail_route, studentDetailRoute } = require('./Router/studentDetailRouter')
 
 const app = express()
 
@@ -18,7 +18,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 app.use('/all_teacher',productRoute)
 app.use('/user', userRoute)
-app.use('/student_detail',student_detail_route)
+app.use('/student_detail',studentDetailRoute)
 app.use('/teacher',teacherRoute)
 
 

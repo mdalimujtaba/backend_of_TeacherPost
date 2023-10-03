@@ -7,7 +7,7 @@ const userRoute = express.Router()
 const nodemailer=require('nodemailer')
 const { UserOTPVerificationModel } = require("../Models/UserOTPVerification")
 // const {authentication}=require('../Authentications/Authentication')
-const { StudentAuthentication } = require("../Authentications/studentAuthentication")
+const {  studentAuthentication } = require("../Authentications/studentAuthentication")
 
 
 const transporter = nodemailer.createTransport({
@@ -116,7 +116,7 @@ const sendOTPVerificationEmail=async({_id,email},res)=>{
     }
 }
 // userRoute.use(authentication)
-userRoute.use(StudentAuthentication)
+userRoute.use(studentAuthentication)
 userRoute.get('/userGet',async(req,res)=>{
     const {userID}=req.body
     let user=await UserModel.findById(userID)
@@ -184,16 +184,15 @@ try {
 userRoute.post('/logout',async(req,res)=>{
     let {userID}=req.body
     let cookie=req.headers.cookie
-    console.log(cookie)
+    // console.log(cookie)
     let prevToken=cookie.split("=")[1]
     if(!prevToken){
         res.status(400).json({"message":"Could't found token"})
     }
-    jwt.verify(prevToken, "teacher",(err,user)=>{ 
-      
+    jwt.verify(prevToken, "student",(err,user)=>{ 
         res.clearCookie(`${userID}`)
         req.cookies[`${userID}`]=""
-        console.log( req.cookies)
+       
         return res.status(200).json({"message":"Successfully logged out"})
     });
 })

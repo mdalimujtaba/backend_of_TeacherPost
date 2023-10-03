@@ -46,7 +46,15 @@ productRoute.post('/upload',upload.fields([{name:'file'},{name:'video'}]),async(
 })
 productRoute.get('/account',async(req,res)=>{
     const {userID}=req.body
-    const details=await productModel.find({userID})
+    try {
+        const details=await productModel.find({userID})
+        console.log(details)
+        res.status(200).json({"message":"Successfull"},{"data":details})
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({"message":"failed"})
+
+    }
 })
 
 

@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
-const studentAuthentication = (req, res, next) => {
-  let cookies = req.headers.cookie;
-  console.log(cookies)
-  if (cookies == undefined) {
+const studentDetailAuthentication = (req, res, next) => {
+  let token = req.headers.authorization;
+  console.log(token)
+
+  if (token == undefined) {
     res.send({ message: "Students! Please Login!" });
   } else {
-    let token = cookies.split("=")[1];
+    
     var decoded = jwt.verify(token, "student");
     console.log(decoded)
     if (decoded) {
@@ -19,7 +20,6 @@ const studentAuthentication = (req, res, next) => {
   }
 };
 
-
 module.exports = {
-  studentAuthentication
+  studentDetailAuthentication
 };
