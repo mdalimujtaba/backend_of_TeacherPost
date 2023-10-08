@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const fs=require('fs')
 require('dotenv').config()
 const cookie=require('cookie-parser')
 const port = process.env.PORT
@@ -20,6 +21,32 @@ app.use('/all_teacher',productRoute)
 app.use('/user', userRoute)
 app.use('/student_detail',studentDetailRoute)
 app.use('/teacher',teacherRoute)
+
+
+
+
+app.get('/api',async(req,res)=>{
+    try {
+        if(req.url==='/favicon.ico'){
+            res.end()
+        }
+        // console.log(req.query)
+        const json=fs.readFileSync('count.json','utf-8')
+        
+        const obj=JSON.parse(json)
+        if(req.query.type==='visit-pageview'){
+            obj.visits=obj.visits+1
+        }else{
+            obj.pageviews=obj.pageviews+1
+
+        }
+        const newJSON=JSON.stringify(obj)
+        fs.writeFileSync('count.json',newJSON)
+        res.status(200).json({'pageviews':obj.pageviews,'visits':obj.visits})
+    } catch (error) {
+        res.status(400).send({'message':'Something wrong'})
+    }
+})
 
 
 app.listen(port, async () => {

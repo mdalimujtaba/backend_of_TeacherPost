@@ -6,7 +6,7 @@ const { authentication } = require('../Authentications/Authentication')
 
 
 
-productRoute.get('/get',async(req,res)=>{
+productRoute.get('/admin_get',async(req,res)=>{
     try {
         const details=await productModel.find()
         console.log(details)
@@ -16,6 +16,29 @@ productRoute.get('/get',async(req,res)=>{
         res.send({'msg':'fails'})
     }
 })
+productRoute.patch("/admin_update/:id",async(req,res)=>{
+    let payload=req.body
+    let id=req.params.id
+    try {
+        await productModel.findByIdAndUpdate({_id:id},payload)
+        res.send(`id no. ${id} is updated`)
+    } catch (error) {
+        console.log(error)
+        res.send("Something went wrong")
+    }
+})
+
+productRoute.delete("/delete/:id",async(req,res)=>{
+    let id=req.params.id
+    try {
+        await productModel.findByIdAndDelete({_id:id})
+        res.send(`id number ${id} is deleted`)
+    } catch (error) {
+        console.log(error)
+        res.send("Something went wrong")
+    }
+})
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       return cb(null, './Media/uploads')
@@ -54,6 +77,20 @@ productRoute.get('/account',async(req,res)=>{
         console.log(error)
         res.status(400).json({"message":"failed"})
 
+    }
+})
+productRoute.patch("/update",async(req,res)=>{
+    let payload=req.body
+    let {userID}=req.body
+    try {
+        const data=await productModel.find({userID})
+        let id=data[0]._id
+       let detail= await productModel.findByIdAndUpdate({_id:id},payload)
+       console.log(detail)
+        res.send(`id no. ${userID} is updated`)
+    } catch (error) {
+        console.log(error)
+        res.send("Something went wrong")
     }
 })
 

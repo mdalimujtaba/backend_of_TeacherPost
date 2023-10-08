@@ -3,6 +3,39 @@ const studentDetailRoute=express.Router()
 const { studentDetailModel } = require("../Models/studentDetailModel")
 const { studentDetailAuthentication } = require("../Authentications/AuthenticationForStudentDetail")
 
+studentDetailRoute.patch("/update/:id",async(req,res)=>{
+    let payload=req.body
+    let id=req.params.id
+    try {
+        await studentDetailModel.findByIdAndUpdate({_id:id},payload)
+        res.send(`id no. ${id} is updated`)
+    } catch (error) {
+        console.log(error)
+        res.send("Something went wrong")
+    }
+})
+
+studentDetailRoute.delete("/delete/:id",async(req,res)=>{
+    let id=req.params.id
+    try {
+        await studentDetailModel.findByIdAndDelete({_id:id})
+        res.send(`id number ${id} is deleted`)
+    } catch (error) {
+        console.log(error)
+        res.send("Something went wrong")
+    }
+})
+studentDetailRoute.get("/get_student_detail",async(req,res)=>{
+    
+    try {
+        const detail=await studentDetailModel.find()
+        res.status(200).json({"message":"Successful"},{"data":detail})
+        
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({"message":"Something went wrong"})
+    }
+})
 
 studentDetailRoute.use(studentDetailAuthentication)
 studentDetailRoute.get("/get_student_detail",async(req,res)=>{
