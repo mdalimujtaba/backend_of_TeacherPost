@@ -3,7 +3,7 @@ const { productModel } = require('../Models/productModels')
 const productRoute = express.Router()
 const multer = require('multer')
 const { authentication } = require('../Authentications/Authentication')
-const { studentAuthentication } = require('../Authentications/studentAuthentication')
+const { studentDetailAuthentication } = require('../Authentications/AuthenticationForStudentDetail')
 
 
 
@@ -51,31 +51,14 @@ productRoute.delete("/delete/:id", async (req, res) => {
         res.send("Something went wrong")
     }
 })
+productRoute.use(studentDetailAuthentication)
 productRoute.get("/get_tutor_details/:id", async (req, res) => {
     let id = req.params.id
-  let cookies = req.headers.cookie;
-  console.log('cookie ::',cookies)
-    console.log('req:', req.params)
     // console.log('id:', id)
     try {
-        if (cookies == undefined) {
-            res.send({ message: "Students! Please Login!" });
-          } else {
-            let token = cookies.split("=")[1];
-            var decoded = jwt.verify(token, "student");
-            console.log(decoded)
-            if (decoded) {
-              let userID = decoded.userID;
-              console.log(userID)
               let tutor_details = await productModel.findById({ _id: id })
         // console.log(tutor_details)
         res.send({ "message": "Successfully got data.", "tutor_details": tutor_details })
-              
-            } else {
-              res.send({ msg: "Students! Please Login!" });
-            }
-          }
-        
 
     } catch (error) {
         console.log(error)
@@ -95,7 +78,7 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({ storage })
-// productRoute.use(authentication)
+productRoute.use(authentication)
 
 productRoute.post('/upload', upload.fields([{ name: 'file' }, { name: 'video' }]), async (req, res) => {
     const { userID, firstname, lastname, gender, description, specialist, specialist_class, language, classes, mode, experience, location, address, fees } = req.body
@@ -141,7 +124,6 @@ productRoute.patch("/update", async (req, res) => {
         res.send("Something went wrong")
     }
 })
-// productRoute.use(studentAuthentication)
 
 
 
