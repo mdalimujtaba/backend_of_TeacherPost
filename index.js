@@ -13,7 +13,7 @@ const { student_detail_route, studentDetailRoute } = require('./Router/studentDe
 
 const app = express()
 
-app.use(cors({credentials:true,origin:"http://localhost:5173"}))
+app.use(cors({credentials:true,origin:"http://localhost:8080"}))
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))

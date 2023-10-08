@@ -11,7 +11,7 @@ const studentAuthentication = (req, res, next) => {
     if (decoded) {
       let userID = decoded.userID;
       req.body.userID = userID;
-      // console.log("userID", userID);
+      console.log("userID", userID);
       next();
     } else {
       res.send({ msg: "Students! Please Login!" });
