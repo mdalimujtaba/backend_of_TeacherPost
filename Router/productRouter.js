@@ -43,6 +43,7 @@ productRoute.patch("/admin_update/:id", async (req, res) => {
 
 productRoute.delete("/delete/:id", async (req, res) => {
     let id = req.params.id
+    console.log("req :", req.params)
     try {
         await productModel.findByIdAndDelete({ _id: id })
         res.send(`id number ${id} is deleted`)
@@ -54,10 +55,11 @@ productRoute.delete("/delete/:id", async (req, res) => {
 productRoute.use(studentDetailAuthentication)
 productRoute.get("/get_tutor_details/:id", async (req, res) => {
     let id = req.params.id
-    // console.log('id:', id)
+    console.log('id:', id)
+    console.log('req.params:', req.params)
     try {
-              let tutor_details = await productModel.findById({ _id: id })
-        // console.log(tutor_details)
+        let tutor_details = await productModel.findById({ _id: id })
+        console.log(tutor_details)
         res.send({ "message": "Successfully got data.", "tutor_details": tutor_details })
 
     } catch (error) {
@@ -110,6 +112,7 @@ productRoute.get('/account', async (req, res) => {
 
     }
 })
+
 productRoute.patch("/update", async (req, res) => {
     let payload = req.body
     let { userID } = req.body
